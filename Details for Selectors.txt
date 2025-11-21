@@ -1,0 +1,132 @@
+I will give you some detail information about the form’s fields and navigation to better target what the script needs to target You should use only the information that is necessary to target better, you are not obligated to use all the information that i give you about the input fields or the navigation(buttons or anchors):
+
+1. Initial Agreement
+? Checkbox ? input[type=checkbox] but make sure it has the text “I agree to the terms and conditions” as a label.
+
+
+?? Start button ? an anchor inside layers of div that has inside it a <p>element  that has a <span> with the text ‘Start Individual Appointment’.
+2. Appointment Type
+? List of anchors that have <strong> and <p> with texts buried inside div. We will navigate through the one with the texts “New Passport” “Appointment” inside <strong> and “First time applicants are requested to schedule for appointment. You receive confirmation via email or SMS. Print the last page which has your appointment date and time. Take the paper with you to your appointment consular.”
+ Inside <p>. Both inside their own divs.
+3. Site Selection Form(Cloudflare wait here)
+? Dropdowns with values look clear:
+
+
+Select Site Location ? option: Central Ethiopia Regional State (value=23)
+Select City ? option: Hossana (value=33)
+Select Office ? option: Hossana ICS (value=39)
+Select Delivery Site ? option: Hossana ICS Office (value=19)
+?? Cloudflare wait ? it might be ~20s spinner. And might require me to check I’m not a robot so I will manually handle this part(waiting for the cloudflare and hitting next).
+
+4. Date & Time Form Input (calendar)
+?? Date input ? calendar days are <button type="button">. Enabled days do not have the attribute disabled.. But the list of buttons are inside many layers of div. You can use the below python with selenium snippet by correcting the indentation:
+
+
+enabled_buttons = driver.find_elements(By.CSS_SELECTOR, "button:not([disabled])")
+if enabled_buttons:
+    enabled_buttons[0].click()
+
+
+
+?? Time slot ? Time slots are revealed as a table,The outer most table has two tables as different <td>, one table for time slots in the morning and another for time slots in the afternoon. Each <tr> element for each row has one <td> that has a <input type =”button”> "click from revealed table". Target the time slot in the following way:
+desired_time = "09:00:00 - 10:00:00"
+desired_time = “09:00:00 - 10:00:00"
+button = wait.until(EC.element_to_be_clickable((By.XPATH, f"//input[@type='button' and @value='{desired_time}']")))
+button.click()
+?   Next button ?  a button of type=”button” nested inside layers of div. you can target       and click it in the following way:
+
+next_button = wait.until(EC.element_to_be_clickable((By.CSS_SELECTOR, 'div[data-test="col"].next-button button.btn-primary')))
+next_button.click()
+
+
+
+
+5. Applicant Details Form
+? English: input[name=firstName] input[name=middleName] input[name=lastName] .
+? Amharic: input[name=geezFirstName] input[name=geezMiddleName] input[name=geezLastName].
+? DOB ?  input[id=date-picker-dialog] (format mm/dd/yy).
+? Birth Place ? input[name=birthPlace]
+? Phone ? input[name=phoneNumber]
+? Nationality ? select[name=nationalityId] ? choose "ETHIOPIA" (value=1) 
+? Gender ? select[name=gender], Male=1, Female=0
+? Marital Status ? select[name=martialStatus] (0=Single, 1=Married, 2=Divorced, 3=Widowed) ? choose “Single”
+ (Other fields like email, occupation, height, eye/hair color ? leave as is with default value)
+? Next button ? <button> inside layers of div that has a <span> with the text “Next” inside it
+6. Address Form
+? Region ? a select with label ‘region’ -> choose option "Central Ethiopia Regional State" 
+
+
+ ? City ? a text input[type =”text” name=”city”] ? type “Hossana”.
+ ? Next ? Button of type=”button” inside layers of div but has a span with text “Next” inside it.
+
+
+7. Family Details Form
+? No mandatory fields ? only need Next.
+
+
+ ? Next ? Button of type=”button” inside layers of div but has a span with text “Next” inside it.
+
+8. Passport Pages Form
+? Passport PageNo = Default value
+Next = Button inside layers of div with span with the text “Submit” inside it.
+
+
+?? Cloudflare wait again here ? need selector for spinner.
+I will handle the submission of this part manually.
+
+
+
+9. Upload Documents
+? input[type=file] ? good.
+file_inputs = wait.until(EC.presence_of_all_elements_located((By.CSS_SELECTOR, "input[type='file']")))
+
+Upload Government ID ? input[type=file] (path comes from client data) 
+gov_id_path = client_data.get("governmentIdPath")
+    if not gov_id_path or not os.path.exists(gov_id_path):
+        raise FileNotFoundError(f"Government ID file not found: {gov_id_path}")
+    file_inputs[0].send_keys(gov_id_path)
+
+Upload Birth Certificate ? input[type=file] (path comes from client data) 
+
+birth_cert_path = client_data.get("birthCertificatePath")
+    if not birth_cert_path or not os.path.exists(birth_cert_path):
+        raise FileNotFoundError(f"Birth certificate file not found: {birth_cert_path}")
+    file_inputs[1].send_keys(birth_cert_path)
+
+Submit : a button of type=”submit” with the text “submit” inside it
+10. Confirm Applicant Details
+? Checkbox: input[type=checkbox] with a label with text“Confirm Applicant Details.
+??I will handle the submission of this form.
+
+
+
+11. Payment Selection
+? Payment logo (CBE Mobile) ? clickable <div> with <img> and <p> “pay with” “CBE Mobile”
+payment_option = wait.until(EC.element_to_be_clickable((By.XPATH, "//div[contains(@class, 'types') and contains(text(), 'Pay with CBE Mobile')]")))
+   	payment_option.click()
+
+?? Terms checkbox ? again input[type=checkbox] with label  “Agree to terms and conditions”
+
+
+? Submit ? button of type=”button”,with the text “Next” inside it.
+
+
+
+12. Instruction Page
+? Extract:
+
+
+Order Code
+
+
+Application Number
+
+
+
+?? I will manually do that my self for now.
+
+Additional Notes 
+If the script faces an issue it should not close the browser window or go to another client by refreshing the page, it should wait for me to fix the issue, by logging(printing) what the issue is so i can see it in the cmd. 
+There are two Cloudflare waits: after site selection (step 3) and after passport pages (step 8). Wait up to ~20s until the spinner disappears.
+ 
+I will provide the client specific data (names, DOB, phone, file paths, etc.) to fill in the JSON file. The script only needs to fill required fields. Non-mandatory ones should be ignored. Since this is semi-automation, if something fails to click or fill, I will manually intervene and then let the script continue.

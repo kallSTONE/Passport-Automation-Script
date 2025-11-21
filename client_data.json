@@ -1,0 +1,13 @@
+{
+    "firstName": "John",
+    "middleName": "Michael",
+    "lastName": "Doe",
+    "geezFirstName": "ጃን",
+    "geezMiddleName": "ሚካኤል",
+    "geezLastName": "ዶ",
+    "DOB": "01/01/1990",
+    "birthPlace": "Addis Ababa",
+    "phoneNumber": "+251911223344",
+    "governmentIdPath": "D:\\Passport\\Bini\\gov_id.jpg",
+    "birthCertificatePath": "D:\\Passport\\Bini\\birth_cert.pdf"
+}

@@ -1,0 +1,104 @@
+I will give you some detail information about the form’s fields and navigation to better target what the script needs to target You should use only the information that is necessary to target better, you are not obligated to use all the information that i give you about the inpu fields or the navigation(buttons or anchors):
+1. Initial Agreement
+? Checkbox ? input[type=checkbox] (likely unique enough if only one at this stage) but make sure it has the text “I agree to the terms and conditions” as a label or some other way.
+
+
+?? Start button ? an anchor inside layers of div that has inside it a <p> that has the text ‘Start Individual Appointment.
+2. Appointment Type
+? List of anchors that have <strong> and <p> with texts buried inside div. We will navigate through the one with the text “New Passport” “Appointment” inside <strong> and “First time applicants are requested to schedule for appointment. You receive confirmation via email or SMS. Print the last page which has your appointment date and time. Take the paper with you to your appointment consular.”
+ Inside <p>
+3. Site Selection Form(Cloudflare wait here)
+? Dropdowns with values look clear:
+
+
+Select Site Location ? option: Central Ethiopia Regional State (value=23)
+Select City ? option: Hossana (value=33)
+Select Office ? option: Hossana ICS (value=39)
+Select Delivery Site ? option: Hossana ICS Office (value=19)
+?? Cloudflare wait ? it might be ~20s spinner. And might require me to check i’m not a robot so I will manually handle this part(waiting for the cloudflare and hitting next).
+
+4. Date & Time Form Input (calendar)
+?? Date input ? Is a weird one, the dates are <button> of type=”button” and the ones we can click on do not have a property disabled written on them. But these list of buttons are inside many layers of div. You can use the below python with selenium snippet by correcting the indentation:
+enabled_buttons = driver.find_elements(By.CSS_SELECTOR, "button:not([disabled])")if enabled_buttons:    enabled_buttons[0].click()
+
+
+?? Time slot ? "click from revealed list".
+
+
+Need to know if slots appear as <li>, <button>, or something else but can’t for now, so I will click from the list that appears manually.
+
+5. Applicant Details Form
+? English: input[name=firstName] input[name=middleName] input[name=lastName] .
+? Amharic: input[name=geezFirstName] input[name=geezMiddleName] input[name=geezLastName].
+? DOB ?  input[id=date-picker-dialog] (format mm/dd/yy).
+? Birth Place ? input[name=birthPlace]
+? Phone ? input[name=phoneNumber]
+? Nationality ? select[name=nationalityId] ? choose "ETHIOPIA" (value=1) 
+? Gender ? select[name=gender], Male=1, Female=0
+? Marital Status ? select[name=martialStatus] (0=Single, 1=Married, 2=Divorced, 3=Widowed) ? choose “Single”
+ (Other fields like email, occupation, height, eye/hair color ? leave as is with default value)
+? Next button ? <button> inside layers of div that has a <span> with the text “Next” inside it
+6. Address Form
+? Region ? select "Central Ethiopia Regional State" 
+
+
+ ? City ? text input[name=city] ? type “Hossana” for all clients.
+
+7. Family Details Form
+? No mandatory fields ? only need Next.
+
+
+ ? Next ? Button of type=”button” has a span with text “Next” inside it
+
+8. Passport Pages Form
+? Passport PageNo = Default value
+Next = Button with span with the text “Submit”
+
+
+?? Cloudflare wait again here ? need selector for spinner.
+I will handle the submission of this part manually.
+
+
+
+9. Upload Documents
+? input[type=file] ? good.
+
+
+?? Sometimes there are multiple input[type=file], so we’ll need to ensure correct one for "Government ID" and "Birth Certificate" (e.g. by id or name). Do you have their attributes?
+Upload Government ID ? input[type=file] (path comes from client data) 
+Upload Birth Certificate ? input[type=file] (path comes from client data) 
+I will manually submit this form.
+10. Confirm Applicant Details
+? Checkbox: input[type=checkbox]
+
+
+??I will handle the submission of this form as well.
+
+
+
+11. Payment Selection
+? Payment logo (CBE Mobile) ? clickable <img> or <button> 
+?? Terms checkbox ? again input[type=checkbox]  “Agree to terms and conditions”
+
+
+? Submit ? likely button, but If not easy to find i will submit manually.
+
+
+
+12. Instruction Page
+? Extract:
+
+
+Order Code
+
+
+Application Number
+
+
+Additional Notes
+
+
+?? I will manually do that my self for now.
+Additional Notes 
+There are two Cloudflare waits: after site selection (step 3) and after passport pages (step 8). Wait up to ~20s until spinner disappears. 
+I will provide the client data (names, DOB, phone, file paths, etc.) to fill in. The script only needs to fill required fields. Non-mandatory ones should be ignored. Since this is semi-automation, if something fails to click or fill, I will manually intervene and then let the script continue.
