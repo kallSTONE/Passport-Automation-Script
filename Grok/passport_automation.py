@@ -78,7 +78,7 @@ try:
     next_button.click()
     print("Clicked 'Next' on Date & Time form.")
 
-    # Step  5: Applicant Details Form
+    # Step  5: Applicant  Details Form
     wait.until(EC.presence_of_element_located((By.NAME, "firstName")))
     driver.find_element(By.NAME, "firstName").clear()
     driver.find_element(By.NAME, "firstName").send_keys(client_data["firstName"])
