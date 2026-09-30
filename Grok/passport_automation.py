@@ -39,7 +39,7 @@ try:
     new_passport_anchor = wait.until(EC.element_to_be_clickable((By.XPATH, "//a[descendant::strong[text()='New Passport'] and descendant::p[contains(text(), 'First time applicants')]]")))
     new_passport_anchor.click()
     print("Selected 'New Passport' appointment type.")
-
+ 
     # Step 3: Site Selection Form (Manual Cloudflare wait)
     print("Waiting for Cloudflare check (manual intervention needed for ~20s spinner).")
     input("Press Enter after manual step and Cloudflare check...")
