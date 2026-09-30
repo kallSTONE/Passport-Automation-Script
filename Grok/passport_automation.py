@@ -118,7 +118,7 @@ try:
     
     driver.find_element(By.NAME, "nationalityId").find_element(By.XPATH, "//option[@value='1']").click()
     print("Selected nationality: ETHIOPIA")
-    
+     
     driver.find_element(By.NAME, "gender").find_element(By.XPATH, "//option[@value='1']").click()  # Male
     print("Selected gender: Male")
     
