@@ -142,7 +142,7 @@ try:
     next_button.click()
     print("Clicked 'Next' on Address form.")
 
-    # Step 7: Family Details Form
+    # Step 7: Family  Details Form
     next_button = wait.until(EC.element_to_be_clickable((By.XPATH, "//button[descendant::span[text()='Next']]")))
     next_button.click()
     print("Clicked 'Next' on Family Details form.")
